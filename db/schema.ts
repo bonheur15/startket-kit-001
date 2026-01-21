@@ -47,10 +47,22 @@ export const user = mysqlTable("user", {
 	email: varchar({ length: 255 }),
 	emailVerified: timestamp({ fsp: 3, mode: 'string' }),
 	image: varchar({ length: 255 }),
+	password: varchar({ length: 255 }),
 },
 (table) => [
 	primaryKey({ columns: [table.id], name: "user_id"}),
 	unique("user_email_unique").on(table.email),
+]);
+
+export const passwordResetToken = mysqlTable("password_reset_token", {
+	id: varchar({ length: 255 }).notNull(),
+	email: varchar({ length: 255 }).notNull(),
+	token: varchar({ length: 255 }).notNull(),
+	expires: timestamp({ mode: 'string' }).notNull(),
+},
+(table) => [
+	primaryKey({ columns: [table.id, table.token], name: "password_reset_token_id_token"}),
+	unique("password_reset_token_token_unique").on(table.token),
 ]);
 
 export const verificationToken = mysqlTable("verification_token", {
