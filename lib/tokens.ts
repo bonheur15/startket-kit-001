@@ -7,10 +7,13 @@ import { eq } from "drizzle-orm";
 // Fallback for uuid if not installed, though we should check package.json or use crypto
 const generateId = () => crypto.randomUUID();
 
+const TOKEN_EXPIRATION_HOURS = 5;
+const TOKEN_EXPIRATION_MS = TOKEN_EXPIRATION_HOURS * 60 * 60 * 1000;
+
 export const generateVerificationToken = async (email: string) => {
   const token = generateId();
-  // Expires in 1 hour
-  const expires = new Date(new Date().getTime() + 3600 * 1000); 
+  // Expires in 5 hours
+  const expires = new Date(new Date().getTime() + TOKEN_EXPIRATION_MS); 
 
   const existingToken = await getVerificationTokenByEmail(email);
 
@@ -48,7 +51,7 @@ export const generateVerificationToken = async (email: string) => {
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = generateId();
-  const expires = new Date(new Date().getTime() + 3600 * 1000);
+  const expires = new Date(new Date().getTime() + TOKEN_EXPIRATION_MS);
   const expiresStr = expires.toISOString().slice(0, 19).replace('T', ' ');
 
   const existingToken = await getPasswordResetTokenByEmail(email);

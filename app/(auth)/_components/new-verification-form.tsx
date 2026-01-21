@@ -5,10 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { BeatLoader } from "react-spinners"; // Check if installed? Probably not.
 // If not installed, I'll use a simple text or a CSS spinner.
 // I'll stick to simple text if loading.
-import { CardWrapper } from "@/components/auth/card-wrapper";
+import { CardWrapper } from "./card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { newVerification } from "@/actions/auth";
+import { newVerification } from "@/app/(auth)/actions";
 
 export const NewVerificationForm = () => {
   const [error, setError] = useState<string | undefined>();

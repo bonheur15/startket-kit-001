@@ -4,7 +4,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -14,44 +14,66 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { CardWrapper } from "@/components/auth/card-wrapper";
+import { CardWrapper } from "./card-wrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { register } from "@/actions/auth";
+import { login } from "@/app/(auth)/actions";
+import Link from "next/link";
 
-export const RegisterForm = () => {
+export const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
-      name: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
 
     startTransition(() => {
-      register(values)
+      login(values)
         .then((data) => {
-          setError(data.error);
-          setSuccess(data.success);
-        });
+          // If login is successful, next-auth handles redirect usually, 
+          // or we can look for error in data if any.
+            if (data?.error) {
+                form.reset();
+                setError(data.error);
+            }
+            // If success (e.g. 2FA or just checking), currently login returns void or error if redirect happens?
+            // Actually signIn redirect throws, so if we are here, and no error, it might be 2FA or something else.
+            // But we caught the redirect error? No, server action `signIn` redirects by throwing.
+            // But we wrapped it in try/catch in `actions/auth.ts`.
+            // Wait, I wrapped it: 
+            /*
+            try { await signIn(...) } catch (error) { ... throw error }
+            */
+            // So if it redirects, it throws NEXT_REDIRECT, which should be rethrown. 
+            // The client side `login` call might just not resolve if redirect happens? 
+            // Or it resolves with nothing?
+            // Actually if redirect happens, the promise usually doesn't resolve in a way we see data, or the page unloads.
+            
+            if (data?.success) {
+                form.reset();
+                setSuccess(data.success);
+            }
+        })
+        .catch(() => setError("Something went wrong"));
     });
   };
 
   return (
     <CardWrapper
-      headerLabel="Create an account"
-      backButtonLabel="Already have an account?"
-      backButtonHref="/login"
+      headerLabel="Welcome back"
+      backButtonLabel="Don't have an account?"
+      backButtonHref="/register"
       showSocial
     >
       <Form {...form}>
@@ -60,23 +82,6 @@ export const RegisterForm = () => {
           className="space-y-6"
         >
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="John Doe"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="email"
@@ -109,6 +114,16 @@ export const RegisterForm = () => {
                       type="password"
                     />
                   </FormControl>
+                  <Button
+                    size="sm"
+                    variant="link"
+                    asChild
+                    className="px-0 font-normal"
+                  >
+                    <Link href="/reset-password">
+                      Forgot password?
+                    </Link>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
@@ -121,7 +136,7 @@ export const RegisterForm = () => {
             type="submit"
             className="w-full"
           >
-            Create an account
+            Login
           </Button>
         </form>
       </Form>
