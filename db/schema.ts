@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, varchar, int, unique, timestamp } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, varchar, int, unique, timestamp, text } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const account = mysqlTable("account", {
