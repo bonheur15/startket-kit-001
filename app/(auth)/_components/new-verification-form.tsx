@@ -2,9 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { BeatLoader } from "react-spinners"; // Check if installed? Probably not.
-// If not installed, I'll use a simple text or a CSS spinner.
-// I'll stick to simple text if loading.
 import { CardWrapper } from "./card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -46,12 +43,10 @@ export const NewVerificationForm = () => {
     >
       <div className="flex items-center w-full justify-center">
         {!success && !error && (
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
         )}
         <FormSuccess message={success} />
-        {!success && (
-          <FormError message={error} />
-        )}
+        {!success && <FormError message={error} />}
       </div>
     </CardWrapper>
   );
