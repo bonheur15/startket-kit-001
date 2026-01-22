@@ -1,15 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { FcGoogle } from "react-icons/fc"; // Check if installed, if not will fail.
-// Existing imports were only react-icons/fc? No, nothing.
-// I should check package.json for icons.
-// Existing file `app/(auth)/login/page.tsx` didn't use icons.
-// I'll check if react-icons is in package.json.
-// If not, I'll use Lucide icons which are in package.json (lucide-react).
-// Google icon is not in Lucide. I might need to SVG it or install react-icons.
-// Or just use text "Google".
-// Let's use SVG for Google if needed.
 import { Button } from "@/components/ui/button";
 
 export const Social = () => {

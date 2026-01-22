@@ -47,23 +47,6 @@ export const LoginForm = () => {
                 form.reset();
                 setError(data.error);
             }
-            // If success (e.g. 2FA or just checking), currently login returns void or error if redirect happens?
-            // Actually signIn redirect throws, so if we are here, and no error, it might be 2FA or something else.
-            // But we caught the redirect error? No, server action `signIn` redirects by throwing.
-            // But we wrapped it in try/catch in `actions/auth.ts`.
-            // Wait, I wrapped it: 
-            /*
-            try { await signIn(...) } catch (error) { ... throw error }
-            */
-            // So if it redirects, it throws NEXT_REDIRECT, which should be rethrown. 
-            // The client side `login` call might just not resolve if redirect happens? 
-            // Or it resolves with nothing?
-            // Actually if redirect happens, the promise usually doesn't resolve in a way we see data, or the page unloads.
-            
-            if (data?.success) {
-                form.reset();
-                setSuccess(data.success);
-            }
         })
         .catch(() => setError("Something went wrong"));
     });

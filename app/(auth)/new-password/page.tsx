@@ -1,8 +1,11 @@
+import { Suspense } from "react";
 import { NewPasswordForm } from "../_components/new-password-form";
 
 const NewPasswordPage = () => {
   return ( 
-    <NewPasswordForm />
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewPasswordForm />
+    </Suspense>
   );
 }
  

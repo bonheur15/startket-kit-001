@@ -1,8 +1,11 @@
+import { Suspense } from "react";
 import { NewVerificationForm } from "../_components/new-verification-form";
 
 const NewVerificationPage = () => {
   return ( 
-    <NewVerificationForm />
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewVerificationForm />
+    </Suspense>
   );
 }
  
